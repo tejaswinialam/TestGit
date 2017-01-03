@@ -33,10 +33,9 @@
 
     </head>
 
-    <body ng-app="Select" ng-controller="ExampleController" >
-
-        <!-- Top content -->
-        <div class="top-content">
+   <body >
+        <!-- Login content -->
+        <div class="top-content" id="log">
         	
             <div class="inner-bg">
                 <div class="container">
@@ -50,10 +49,12 @@
                             </div>
                         </div>
                     </div>
+                    <span> ${errorMessage}</span>
                     </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                         	<div class="form-top">
+                        	
                         		<div class="form-top-left">
                         			<!-- <h3>Login to our site</h3> -->
                             		<h3><i>Enter your username and password <br>to log on:</i></h3>
@@ -63,22 +64,22 @@
                         		</div>
                             </div>
                             <div class="form-bottom">
-			                    <form role="form" action="" method="post" class="login-form">
+			                    <form role="form" action="Login" method="post" class="login-form">
 			                    	<div class="form-group">
-			                    		<label class="sr-only" for="form-username">Username</label>
-			                        	<input type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username" ng-model="myForm.username" maxlength="7" required>
+			                    		<label class="sr-only" for="username">Username</label>
+			                        	<input type="text" name="username" placeholder="Username..." autofocus="autofocus" class="form-username form-control" id="username" ng-model="myForm.username" maxlength="7" required>
 			                        </div>
 			                        <div class="form-group">
-			                        	<label class="sr-only" for="form-password">Password</label>
-			                        	<input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password" ng-model="myForm.password" maxlength="10" required>
+			                        	<label class="sr-only" for="password">Password</label>
+			                        	<input type="password" name="password" placeholder="Password..." class="form-password form-control" id="password" ng-model="myForm.password" maxlength="10" required>
 			                        </div>
-			                        <button type="submit" class="bttn" ng-click="login()">Sign in!</button>
+			                        <button type="submit" class="bttn" >Sign in!</button>
 			                    </form>
 		                    </div>
                         </div>
                     </div>
                     <br><br>
-                   <div class="row">
+                   <div class="row" ng-app="Select" ng-controller="ExampleController">
                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#ForgotPassword">Forgot Password ?</button>
                       <div class="modal fade" id="ForgotPassword" role="dialog">
     <div  class="modal-dialog">
@@ -109,6 +110,7 @@
             </div>
             
         </div>
+        <!-- Login Content End -->
 
 
         <!-- Javascript -->

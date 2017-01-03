@@ -1,6 +1,7 @@
 package org.kp.msm.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,21 @@ public class LoginBean  implements Serializable{
 	private String username;
 	private String password;
 	private String isAdmin;
+	private String name;
+	private Date sessionStartTime;
+	public Date getSessionStartTime() {
+		return sessionStartTime;
+	}
+	public void setSessionStartTime(Date sessionStartTime) {
+		this.sessionStartTime = sessionStartTime;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	private boolean auth;
 	public String getIsAdmin() {
 		return isAdmin;

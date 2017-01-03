@@ -3,7 +3,7 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 	$scope.getDataFromServer = function() {
 		$http({
 			method : 'GET',
-			url : 'AngServlet'
+			url : 'getAppsList'
 		}).success(function(data, status, headers, config) {
 			$scope.bean = data;
 		}).error(function(data, status, headers, config) {
@@ -12,38 +12,38 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 		});
 	};
 	$scope.load = function() {
-		
-		var selectedNameValue = null, selectedCategoryValue = null;
-		selectedNameValue = $scope.selectedName;
-		//selectedCategoryValue = $scope.selectedCategory;
-		selectedCategoryValue = $scope.category.def;
-		
-		alert("SelectedNameValue : "+selectedNameValue);
-		alert(" selectedCategoryValue : "+selectedCategoryValue);
-		
-		var dataObj = {
-				name : selectedNameValue,
-				category : selectedCategoryValue
-				
-		};	
-		
-		var res = $http.post('/MSMPI/LoadServlet', JSON.stringify(dataObj));
+		//alert("In load");
+		//alert("$scope.selectedName : "+$scope.catname);
+		//alert("$scope.catdef : "+$scope.catdef);
+		if(typeof $scope.catname === 'undefined')
+		{
+		return;
+		}
+		if(typeof $scope.catdef === 'undefined')
+			{
+			return;
+			}
+		var selectedNameValue = $scope.catname;
+		var selectedCategoryValue = $scope.catdef;
+		var url = 'load/'+selectedNameValue+'/'+selectedCategoryValue+'/';
+		var res = $http
+		({
+			method : 'GET',
+			url : url,
+		});
 		res.success(function(data, status, headers, config) {
 			console.info('hi');
 			$("#search2").show();
 			$scope.category=data;
-			 $scope.teja = selectedNameValue;
-			 $scope.teja2= selectedCategoryValue;
-			 $scope.category.def=selectedCategoryValue;
-			 $scope.selectedName = selectedNameValue;
-			 alert("selected Name :" +$scope.selectedName);
+			 $scope.selectedNameValue = selectedNameValue;
+			 $scope.selectedCategoryValue= selectedCategoryValue;
 		});
 		
-
+		//alert("$scope.selectedName : "+$scope.catname);
 	
 	};
 	
-	$scope.storeSelectedName = function(selectName) {
+	/*$scope.storeSelectedName = function(selectName) {
 		console.info('selected name : ' +selectName);
 		$scope.selectedName = selectName;
 	};
@@ -51,7 +51,7 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 	$scope.storeSelectedCategory = function(selectCategory) {
 		console.info('selected category:'+selectCategory);
 		$scope.selectedCategory = selectCategory;
-	};
+	};*/
 
 
 	$scope.cat=["Work Order","Task","Incident","Change Request"];
@@ -60,8 +60,6 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 		
 		var email = $scope.ForgotPassword.email;
 		var nuid = $scope.ForgotPassword.nuid;
-		//alert("Email : "+email);
-		//alert("nuid : "+nuid);
 		var dataObj = {
 				email : email,
 				nuid : nuid
@@ -115,7 +113,18 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 		res.success(function(data, status, headers, config) {
 			$scope.logon=data;
 			var suc = $scope.logon.auth;
-			alert("suvcc : "+suc);
+		//	alert("suvcc : "+suc);
+			if(suc)
+				{
+				alert("Authentication successfull");
+				$("#log").hide();
+				}
+			else
+				{
+				alert("Authentication Unsuccessfull");
+				alert("Invalid Username/Password. Please try again later");
+				}
+			//$window.location.href=url+"msmfill";
 				//alert("Invalid Username/Password. Please try again later");
 		});
 	};
@@ -124,52 +133,163 @@ app.controller('ExampleController', function($scope, $http,$window,$location) {
 	
 $scope.getCategoryListFromWS = function(){
 		
-		var applicationName = $scope.category.app;
-		var categoryType = $scope.teja2;
-		var url = $location.absUrl();
-		var dataObj = {
-				applicationName : applicationName,
-				categoryType : categoryType
-				
-		};	
-		
-		var res = $http.post('/MSMPI/GetCategoryListServlet', JSON.stringify(dataObj));
-		alert("here");
+		var applicationName = $scope.add.appName;
+		var categoryType = $scope.selectedCategoryValue;	
+		var res = $http
+		({
+			method : 'GET',
+			url : 'getCatfromWS/'+applicationName+'/'+categoryType+'/',
+		});
+		//alert("here");
 		res.success(function(data, status, headers, config) {
 			$scope.catData=data;
-			
-			 //alert("selected Name :" +suc);
 		});
 	};
-
-$scope.getUserDetails = function(){
+	
+	$scope.addNewEffort = function(){
 		
-		var uname = $scope.myForm.username;
-		var pwd = $scope.myForm.password;
-		var url = $location.absUrl();
-		var dataObj = {
-				uname : uname,
-				pwd : pwd
-				
-		};	
-		
-		var res = $http.post('/MSMPI/LoginServlet', JSON.stringify(dataObj));
-		alert("here");
+		var eff = $scope.addNew.effort;
+		alert("eff : "+eff);
+		if($scope.addNew.effort == undefined)
+		{
+		alert("Please enter efforts between 1 to 160");
+		return;
+		}
+		var res = $http
+		({
+			method : 'POST',
+			url : 'addEfforts',
+				data :{
+					catNumber : $scope.addNew.catNumber,
+					effort : $scope.addNew.effort,
+					category : $scope.selectedCategoryValue,
+					updateFlag : 'N'
+			}
+		});
 		res.success(function(data, status, headers, config) {
-			alert("In success Method");
-			$scope.logon=data;
-			var suc = $scope.logon.success;
-			alert("suvcc : "+suc);
-			if(suc)
+			$scope.sucs=data;
+			if($scope.sucs)
 				{
-				$window.location.href = url+'msmfill.jsp?admin=true';
+				alert("Efforts are successfully added");
 				}
 			else
 				{
-				alert("Invalid Username/Password. Please try again later");
+				alert("Unable to add efforts");
 				}
-			 //alert("selected Name :" +suc);
+			//$scope.catData = null;
+			$scope.addNew = null;
+			$scope.add.appName = null;
+			$scope.load();
 		});
+		
+	};
+	
+	$scope.addefforts = function(){
+	if($scope.CategorySelect == undefined)
+	{
+	alert("Please select the "+$scope.selectedCategoryValue);
+	return;
+	}
+	var eff = $scope.adding.effort;
+	if($scope.adding.effort == undefined)
+	{
+	alert("Please enter efforts between 1 to 160");
+	return;
+	}
+		var res = $http
+		({
+			method : 'POST',
+			url : 'addEfforts',
+				data :{
+					catNumber : $scope.CategorySelect.catNumber,
+					effort : $scope.adding.effort,
+					category : $scope.selectedCategoryValue,
+					adhocComments : $scope.adding.adhocComments,
+					updateFlag : 'A'
+			}
+		});
+		res.success(function(data, status, headers, config) {
+			$scope.sucs=data;
+			if($scope.sucs)
+				{
+				alert("Efforts are successfully added");
+				}
+			else
+				{
+				alert("Unable to add efforts");
+				}
+			$scope.category=null;
+			$scope.CategorySelect=null;
+			$scope.adding=null;
+			$scope.load();
+		});
+		
 	};
 
+	$scope.editefforts = function(){
+		$scope.editcatNumber = this.history.catNumber;
+		
+	};
+	
+	$scope.saveEffort = function(){
+
+		if($scope.editeffort == undefined ){
+			alert("Please enter efforts between 1 to 160");
+			return;
+		}
+		var res = $http
+		({
+			method : 'POST',
+			url : 'addEfforts',
+				data :{
+					catNumber : $scope.editcatNumber,
+					effort : $scope.editeffort,
+					updateFlag : 'E'
+			}
+		});
+		res.success(function(data, status, headers, config) {
+			$scope.sucs=data;
+			if($scope.sucs)
+				{
+				alert("Efforts are successfully saved");
+				}
+			else
+				{
+				alert("Unable to edit efforts");
+				}
+			$scope.category=null;
+			$scope.CategorySelect=null;
+			$scope.adding=null;
+			$scope.editeffort=null;
+			$scope.load();
+		});
+	};
+	$scope.deleteEffort = function(){
+		if ($window.confirm("Please confirm?")) {
+		var res = $http
+		({
+			method:'POST',
+			url:'addEfforts',
+			data : {
+				catNumber : this.history.catNumber
+			}
+		});
+		res.success(function(data,status,headers,config){
+			$scope.sucs=data;
+			if($scope.sucs)
+			{
+				alert("Efforts are successfully deleted");
+			}
+			else
+				{
+				alert("Unable to delete");
+				}
+			$scope.category=null;
+			$scope.CategorySelect=null;
+			$scope.adding=null;
+			$scope.load();
+		});
+		}
+	};
 });
+
