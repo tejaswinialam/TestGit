@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.kp.msm.bean.ApplicationBean;
 import org.kp.msm.bean.HistoryBean;
+import org.kp.msm.dao.MSMActivityLogDAO;
+import org.kp.msm.dao.TaskDetailsDAO;
+import org.kp.msm.dao.UserDetailsDAO;
+import org.kp.msm.entity.MSMActivityLog;
 
 
 
@@ -214,6 +218,21 @@ public class TestClass {
 		li.add(hb3);
 		}
 		return li;
+	}
+	
+	public static void main(String args[])
+	{
+		//UserDetailsDAO ud = new UserDetailsDAO();
+		//ud.addUser("S123788", "S123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", "Y", "S123788");
+		//TaskDetailsDAO td = new TaskDetailsDAO();
+		//td.addTaskDetails("CRQ0000004446101", "AD CDA ECONSULT", "110 CAD - Pre-Project Activities - KPATHS",
+				//"010", "Change Request", "S123788");
+		
+		MSMActivityLogDAO dao = new MSMActivityLogDAO();
+		//dao.addMSMActivity("CRQ0000004445823", "S123788", "January", 100, "Testing", "S123788");
+		dao.updateMSMActivityLog(2, 125, "E", "S123788");
+		ArrayList<MSMActivityLog> list = dao.getEffortForTask("S123788", "January");
+		System.out.println("List size :"+list.size());
 	}
 
 }
