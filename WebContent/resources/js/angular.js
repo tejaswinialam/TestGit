@@ -192,7 +192,8 @@ $scope.getCategoryListFromWS = function(){
 	}
 	var eff = $scope.adding.effort;
 	if($scope.adding.effort == undefined)
-	{
+	{ 
+		alert("$scope.adding.effort :"+$scope.adding.effort);
 	alert("Please enter efforts between 1 to 160");
 	return;
 	}
@@ -228,6 +229,7 @@ $scope.getCategoryListFromWS = function(){
 
 	$scope.editefforts = function(){
 		$scope.editcatNumber = this.history.catNumber;
+		$scope.editTaskId = this.history.taskId;
 		
 	};
 	
@@ -244,6 +246,7 @@ $scope.getCategoryListFromWS = function(){
 				data :{
 					catNumber : $scope.editcatNumber,
 					effort : $scope.editeffort,
+					taskId : $scope.editTaskId,
 					updateFlag : 'E'
 			}
 		});
@@ -266,12 +269,15 @@ $scope.getCategoryListFromWS = function(){
 	};
 	$scope.deleteEffort = function(){
 		if ($window.confirm("Please confirm?")) {
+			alert("this.history.taskId : "+this.history.taskId);
 		var res = $http
 		({
 			method:'POST',
 			url:'addEfforts',
 			data : {
-				catNumber : this.history.catNumber
+				catNumber : this.history.catNumber,
+				taskId : this.history.taskId,
+				updateFlag : 'D'
 			}
 		});
 		res.success(function(data,status,headers,config){

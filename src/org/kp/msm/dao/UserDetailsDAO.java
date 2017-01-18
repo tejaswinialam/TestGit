@@ -14,7 +14,7 @@ public class UserDetailsDAO {
 		boolean add = false;
 		UserDetails userDetails = new UserDetails();
 		try{
-			userDetails.setUserId(UserId);
+			userDetails.setUserId(UserId.toUpperCase());
 			userDetails.setPassword(password);
 			userDetails.setEmail(email);
 			userDetails.setFirstName(FirstName);
@@ -54,7 +54,7 @@ public class UserDetailsDAO {
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
-			System.out.println("Exception occured in addUser Details");
+			System.out.println("Exception occured in getUserDetails");
 		}
 		finally
 		{
@@ -64,7 +64,32 @@ public class UserDetailsDAO {
 		return userDetails;
 	}
 	
-	
+	public boolean updateUserDetails(String userId, String password)
+	{
+		Session session = null;
+		boolean update = false;
+		UserDetails userDetails = null;
+		try{
+			session = HibernateUtil.getSessionFactoryInstance().openSession();
+			session.beginTransaction();
+			userDetails = session.get(UserDetails.class, userId);
+			userDetails.setPassword(password);
+			update = true;
+			session.getTransaction().commit();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			System.out.println("Exception occured in updateUserDetails");
+			update = false;
+		}
+		finally
+		{
+			if(session != null)
+				session.close();
+		}
+		return update;
+	}
 	
 
 }

@@ -80,7 +80,7 @@ public class MSMActivityLogDAO {
 		
 	}
 	
-	public ArrayList<MSMActivityLog> getEffortForTask(String entryId, String Month)
+	public ArrayList<MSMActivityLog> getEffortForTasks(String entryId, String Month)
 	{
 		ArrayList<MSMActivityLog> list = new ArrayList<MSMActivityLog>();
 		Session session = null;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,6 +19,12 @@ import org.kp.msm.bean.ApplicationBean;
 import org.kp.msm.bean.HistoryBean;
 import org.kp.msm.bean.LoginBean;
 import org.kp.msm.bean.ResponseBean;
+import org.kp.msm.dao.MSMActivityLogDAO;
+import org.kp.msm.dao.MSMUtil;
+import org.kp.msm.dao.TaskDetailsDAO;
+import org.kp.msm.dao.UserDetailsDAO;
+import org.kp.msm.entity.MSMActivityLog;
+import org.kp.msm.entity.UserDetails;
 import org.kp.test.TestClass;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -47,11 +54,14 @@ public class LoginController {
 	public ModelAndView validateLogin(@ModelAttribute LoginBean loginbean, HttpServletRequest request, HttpSession session)
 	{
 		System.out.println("Entered into this request");
-
 		//Get from Database
-		String username = "S123788";
-		String password = "S123788";
-		loginbean.setName("Tejaswini Alamuri");
+		UserDetailsDAO udao = new UserDetailsDAO();
+		UserDetails userDetail = udao.getUserDetails(loginbean.getUsername().toUpperCase());
+		if(userDetail != null)
+		{
+		String username = userDetail.getUserId();
+		String password = userDetail.getPassword();
+		loginbean.setName(userDetail.getFirstName()+" "+userDetail.getLastName());
 		loginbean.setSessionStartTime(new Date());
 		System.out.println(loginbean.getUsername());
 		System.out.println(loginbean.getPassword());
@@ -73,6 +83,17 @@ public class LoginController {
 			loginbean.setAuth(false);
 			mav1.addObject("loginbean", loginbean);
 			mav1.addObject("errorMessage", "Invalid Username or Password. Please try again");
+			return mav1;
+		}
+		}
+		else
+		{
+			System.out.println("not Authenticated");
+			ModelAndView mav1 = new ModelAndView("login");
+			System.out.println("Setting the view to login");
+			loginbean.setAuth(false);
+			mav1.addObject("loginbean", loginbean);
+			mav1.addObject("errorMessage", "User doesn't exist. Please ask admin to add");
 			return mav1;
 		}
 	}
@@ -140,10 +161,18 @@ public class LoginController {
 		System.out.println(session.getAttribute("user"));
 		System.out.println("appname from UI :"+appname);
 		System.out.println("Category from UI :"+category);
-		 ArrayList<ApplicationBean> l = TestClass.getTestData(category);
-		 ArrayList<HistoryBean> h = TestClass.getTestData1(category);
-		 request.getSession().getAttribute("user");
+		String userId = MSMUtil.getUserId((LoginBean)request.getSession().getAttribute("user"));
+		
+		TaskDetailsDAO tdao = new TaskDetailsDAO();
+		ArrayList<org.kp.msm.entity.TaskDetails> tasklist = tdao.getTasks(category,appname);
+		 ArrayList<ApplicationBean> l = MSMUtil.getListofTask(tasklist);
 		 
+		 SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+		 String month = sdf.format(new Date());
+		 System.out.println(month);
+		 MSMActivityLogDAO dao = new MSMActivityLogDAO();
+		 ArrayList<MSMActivityLog> list = dao.getEffortForTasks(userId.toUpperCase(), month);
+		 ArrayList<HistoryBean> h = MSMUtil.getListofActivity(list);		 
 		 
 		 ResponseBean jrb = new ResponseBean();
 		 jrb.setBeanList(l);
@@ -172,7 +201,9 @@ public class LoginController {
 	@RequestMapping(value="/addEfforts" ,method=RequestMethod.POST)
 	public @ResponseBody boolean addEfforts(@RequestBody HistoryBean historyBean,HttpServletRequest request, HttpSession session)
 	{
+		boolean update = false;
 		System.out.println(request.getSession().getAttribute("user"));
+		String userId = MSMUtil.getUserId((LoginBean)request.getSession().getAttribute("user"));
 		LoginBean user = (LoginBean) session.getAttribute("user");
 		if(user == null)
 		{
@@ -187,10 +218,23 @@ public class LoginController {
 			System.out.println(historyBean.getCategory());
 			System.out.println(historyBean.getEffort());
 			System.out.println(historyBean.getUpdateFlag());
+			System.out.println(historyBean.getTaskId());
 			System.out.println(historyBean.getAdhocComments());
-			System.out.println();
+			MSMActivityLogDAO msmDao = new MSMActivityLogDAO();
+			if(historyBean.getUpdateFlag().equals("E") ||  historyBean.getUpdateFlag().equals("D"))
+			{
+			update = msmDao.updateMSMActivityLog(Long.parseLong(historyBean.getTaskId()), historyBean.getEffort()== null ? 0 : Integer.parseInt(historyBean.getEffort()), historyBean.getUpdateFlag(), userId.toUpperCase());
+			System.out.println("Successfully edited/Deleted");
+			}else if(historyBean.getUpdateFlag().equals("A") || historyBean.getUpdateFlag().equals("N"))
+			{
+				SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+				String month = sdf.format(new Date());
+				System.out.println(month);
+				update = msmDao.addMSMActivity(historyBean.getCatNumber(), userId.toUpperCase(), month, Integer.parseInt(historyBean.getEffort()), historyBean.getAdhocComments(), userId.toUpperCase());
+				System.out.println("Successfully Added");
+			}
 		}
-		return true;
+		return update;
 	}
 	
 	@RequestMapping(value="/logout" ,method=RequestMethod.POST)

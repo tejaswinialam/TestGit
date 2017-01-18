@@ -141,7 +141,7 @@
 		<thead>
 		<tbody>
 		<tr class="active" ng-repeat="history in category.historyBeanList"> <td> {{ $index + 1}}  </td><td>{{ history.category}}</td>
-		<td>{{history.catNumber}}</td><td>{{history.decription}}</td><td>{{history.effort}}</td><td><button 
+		<td>{{history.catNumber}} <input type="hidden" value="{{history.taskId}}"/></td><td>{{history.decription}}</td><td>{{history.effort}}</td><td><button 
 		class="btn btn-primary btn-sm" ng-click="editefforts()" text-align="center" id="button1" data-toggle="modal" data-target="#edit" >Edit</button>
 		<button class="btn btn-primary btn-sm"  ng-really-message="Are you sure to Delete it ?" ng-click="deleteEffort()" text-align="center" id="button">Delete</button></td></tr> 
 		</tbody>

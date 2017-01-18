@@ -224,14 +224,65 @@ public class TestClass {
 	{
 		//UserDetailsDAO ud = new UserDetailsDAO();
 		//ud.addUser("S123788", "S123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", "Y", "S123788");
-		//TaskDetailsDAO td = new TaskDetailsDAO();
-		//td.addTaskDetails("CRQ0000004446101", "AD CDA ECONSULT", "110 CAD - Pre-Project Activities - KPATHS",
-				//"010", "Change Request", "S123788");
+		/*TaskDetailsDAO td = new TaskDetailsDAO();
+		td.addTaskDetails("CRQ0000004445823", "AD CDA PACTS SUP", "Modify VPN Access for PACTS Support Team",
+				"010", "Change Request", "S123788");
+		td.addTaskDetails("CRQ0000004445817", "AD CDA ECONSULT", "QECNR123 - Abend analysis and followup",
+				"010", "Change Request", "S123788");
+		td.addTaskDetails("CRQ0000003351016", "AD CDA PLMS", "PLMS XP - Consult For Upgrading MS SQL server",
+				null, "Change Request", "S123788");
+		//WO
+		td.addTaskDetails("WO0000003351016", "AD CDA CARETEAMS", "080 - Careteams - Provider Substitution Issue - analysis",
+				"080", "Work Order", "S123788");
+		td.addTaskDetails("WO0000004445817", "AD CDA PLMS", "010 CAD - Core Projects PLMS Process Improvements. PLMS - Health Check Automation",
+				"010", "Work Order", "S123788");
+		td.addTaskDetails("WO0000004445823", "AD CDA PLMS", "010 CAD - Core Projects PLMS Process Improvements. Implementing JPA in NPLMS ",
+				"010", "Work Order", "S123788");
+		td.addTaskDetails("WO0000004446101", "AD CDA PLMS", "Core Projects PLMS Process Improvements. xPression batch Job's XML clean up in plms-xp",
+				"010", "Work Order", "S123788");
+		//TASK
+		td.addTaskDetails("TAS0000003351016", "AD CDA PLMS", "PLMS XP Upgrade and Cloud Migration.",
+				null, "Task", "S123788");
+		td.addTaskDetails("TAS0000004445817", "AD CDA ECONSULT", "KPHC user is unable to change end date for Care Team",
+				null, "Task", "S123788");
+		td.addTaskDetails("TAS0000004445823", "AD CDA ECONSULT", "eConsult Not Launching",
+				null, "Task", "S123788");
+		td.addTaskDetails("TAS0000004446101", "AD CDA PLMS", "100 - PLMS PCP Assignment Letters",
+				null, "Task", "S123788");
+		
+		//INC
+		td.addTaskDetails("INC0000003351016", "AD CDA ECONSULT", "**Urgent** Unable to login to eConsult from KPHC",
+				null, "Incident", "S123788");
+		td.addTaskDetails("INC0000004445817", "AD CDA PACTS SUP", "50 CAD -Appl Knowledge Sharing",
+				null, "Incident", "S123788");
+		td.addTaskDetails("INC0000004445823", "AD CDA MOSL", "100 CAD Covered CA Phase 3",
+				null, "Incident", "S123788");
+		td.addTaskDetails("INC0000004446101", "AD CDA ECONSULT", "110 CAD - Pre-Project Activities - 2015 MAS",
+				null, "Incident", "S123788");*/
 		
 		MSMActivityLogDAO dao = new MSMActivityLogDAO();
-		//dao.addMSMActivity("CRQ0000004445823", "S123788", "January", 100, "Testing", "S123788");
-		dao.updateMSMActivityLog(2, 125, "E", "S123788");
-		ArrayList<MSMActivityLog> list = dao.getEffortForTask("S123788", "January");
+		/*dao.addMSMActivity("CRQ0000003351016", "S123788", "January", 6, "Testing", "S123788");
+		dao.addMSMActivity("CRQ0000004445817", "S123788", "January", 50, "Testing", "S123788");
+		dao.addMSMActivity("CRQ0000004445823", "S123788", "January", 90, "Testing", "S123788");
+		dao.addMSMActivity("CRQ0000004446101", "S123788", "January", 25, "Testing", "S123788");
+		
+		dao.addMSMActivity("INC0000003351016", "S123788", "January", 1, "Testing", "S123788");
+		dao.addMSMActivity("INC0000004445817", "S123788", "January", 3, "Testing", "S123788");
+		dao.addMSMActivity("INC0000004445823", "S123788", "January", 5, "Testing", "S123788");
+		dao.addMSMActivity("INC0000004446101", "S123788", "January", 25, "Testing", "S123788");
+		
+		dao.addMSMActivity("TAS0000003351016", "S123788", "January", 1, "Testing", "S123788");
+		dao.addMSMActivity("TAS0000004445817", "S123788", "January", 10, "Testing", "S123788");
+		dao.addMSMActivity("TAS0000004445823", "S123788", "January", 120, "Testing", "S123788");
+		dao.addMSMActivity("TAS0000004446101", "S123788", "January", 8, "Testing", "S123788");
+		
+		dao.addMSMActivity("WO0000003351016", "S123788", "January", 10, "Testing", "S123788");
+		dao.addMSMActivity("WO0000004445817", "S123788", "January", 20, "Testing", "S123788");
+		dao.addMSMActivity("WO0000004445823", "S123788", "January", 15, "Testing", "S123788");
+		dao.addMSMActivity("WO0000004446101", "S123788", "January", 6, "Testing", "S123788");
+		*/
+		//dao.updateMSMActivityLog(2, 125, "E", "S123788");
+		ArrayList<MSMActivityLog> list = dao.getEffortForTasks("S123788", "January");
 		System.out.println("List size :"+list.size());
 	}
 
