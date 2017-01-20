@@ -297,5 +297,32 @@ $scope.getCategoryListFromWS = function(){
 		});
 		}
 	};
+	
+
+	$scope.findUser = function(){
+		alert("userId :"+$scope.username);
+		var userId = $scope.username;
+		if($scope.username == undefined ){
+			alert("userId :"+$scope.username);
+			return;
+		}
+		var res = $http
+		({
+			method : 'GET',
+			url : 'findUser'+'/'+userId+'/',
+		});
+		res.success(function(data, status, headers, config) {
+			$scope.editUser=data;
+			alert("editUser :"+$scope.editUser);
+			if($scope.editUser == undefined || $scope.editUser == "" )
+				{
+				alert("No User found with this Id");
+				}
+			else
+				{
+				$scope.showUser="Show";
+				}
+		});
+	};
 });
 

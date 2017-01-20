@@ -7,6 +7,7 @@ import org.kp.msm.bean.HistoryBean;
 import org.kp.msm.bean.LoginBean;
 import org.kp.msm.entity.MSMActivityLog;
 import org.kp.msm.entity.TaskDetails;
+import org.kp.msm.entity.UserDetails;
 
 public class MSMUtil {
 	
@@ -69,5 +70,16 @@ public class MSMUtil {
 			return loginBean.getUsername();
 		else
 			return null;
+	}
+	
+	public static LoginBean getLoginBean(UserDetails user)
+	{
+		LoginBean loginbean = new LoginBean();
+		loginbean.setPassword(user.getPassword());
+		loginbean.setEmail(user.getEmail());
+		loginbean.setFirstName(user.getFirstName());
+		loginbean.setLastName(user.getLastName());
+		loginbean.setIsAdmin(user.getAdmin());
+		return loginbean;
 	}
 }

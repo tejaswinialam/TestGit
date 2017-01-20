@@ -106,12 +106,14 @@ public class LoginController {
 		return mav;
 	}
 	
-	/*@RequestMapping(value="/msmfill", method=RequestMethod.GET)
-	public String goToMsmLogin(HttpServletRequest request, HttpSession session)
+	@RequestMapping(value="/msmfill", method=RequestMethod.GET)
+	public ModelAndView goToMsmLogin(HttpServletRequest request, HttpSession session)
 	{
-		System.out.println(session.getAttribute("user"));
-		return "msmfill";
-	}*/
+		ModelAndView mav = new ModelAndView("msmfill");
+		LoginBean loginbean = (LoginBean)request.getSession().getAttribute("user");
+		mav.addObject("loginbean",loginbean);
+		return mav;
+	}
 	
 	@RequestMapping(value="/getAppsList", method=RequestMethod.GET)
 	public @ResponseBody ArrayList<ApplicationBean> getAppsList(HttpServletRequest request, HttpSession session)
