@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 public class MSMActivityLog {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private long Id;
 	

@@ -49,7 +49,7 @@
 <body ng-app="Select">
 
 <div class="top-content" ng-controller="ExampleController">
- <div class="welcome" align=right style="padding: 20px 50px 0px 25px;font-size:20px;" ng-init="getUserDetails()">
+ <div class="welcome" align=right style="padding: 20px 50px 0px 25px;font-size:20px;" ng-init="getTeamDetails()">
               
               <form action="logout" method="post" >
               <i>Welcome ${loginbean.name} 
@@ -61,8 +61,8 @@
               title="Logout" data-content="Default popover"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button>
               </form>
               <% LoginBean loginbean = (LoginBean)session.getAttribute("user");
-              String isAdmin = loginbean.getIsAdmin();
-              if(isAdmin.equals("Y"))
+              boolean isAdmin = loginbean.getIsAdmin();
+              if(isAdmin)
               { %>
               <div align=left><br/>
               <a style="font-size:20px;color:white;" href="msmfill"><i><span class="glyphicon glyphicon-hand-left"></span> MSM Fill Page </i></a>
@@ -85,10 +85,22 @@
                    <tr>
                    <td><button class="btn btn-info" text-align="center" id="buttonSingleUser" data-toggle="modal" data-target="#singleUser"><i>For a single user</i></button></td>
                    <td><button class="btn btn-info" text-align="center" id="buttonSingleTask" data-toggle="modal" data-target="#singleTask"><i>For a particular task</i></button></td>
-                   <td><button class="btn btn-info" text-align="center" id="buttonUsers" data-toggle="modal" data-target="#users"><i>Group of users</i></button></td>
+                   <td><button class="btn btn-info" ng-click="getTeamEfforts()" text-align="center" id="buttonUsers" data-toggle="modal" data-target="#Team" ><i>For team</i></button></td>
                    <tr>
                    </table>
-                    <br/><br/><br/>
+                    <br/><br/>
+                    <div ng-show="teamDet">
+                    <h2 style="color:white;"><i> Team Details </i></h2>
+                    <table class="table table-stripped table-hover active" align="center" style="width:750px;">
+                    <thead><tr><td>S.No</td><td>Team Member Name</td><td>User id</td><td>Action</td></tr></thead>
+                    <tbody>
+                    <tr class="active" ng-repeat="member in teamDetails"> <td> {{ $index + 1}}  </td><td>{{ member.name}}</td>
+		<td>{{member.username}} <input type="hidden" value="member.id"/></td><td><button class="btn btn-primary btn-sm" ng-click="deleteTeamMember()" text-align="center" id="button">Delete</button></td></tr>
+		<tr><td colspan="4" align="right"><button class="btn btn-primary btn-sm" text-align="center" id="buttonAddMember" data-toggle="modal" data-target="#AddMember" >Add member</button></td></tr> 
+                    </tbody>
+                    </table>
+                    <br></br>
+                    </div>
                    <hr style="color:grey;"/>
                    
     <!-- Modal for Add New User -->
@@ -111,7 +123,7 @@
 		</table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addNewUser()">Add</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addUser()">Add</button>
           <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
         </div>
       </div>   
@@ -155,8 +167,152 @@
     </form>
   </div>
   
-  <!-- End Modal for Add New User -->
+  <!-- End Modal for Edit User -->
+  
+  <!-- Modal for delete User -->
+	<div class="modal fade" id="deleteUser" role="dialog">
+	<form name="myForm" class ="form-group" >
+    <div  class="modal-dialog">
+      <div style="width:600px;" align="center"  class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delete user</h4>
+        </div>
+        <div class="modal-body" name="DeleteUser" style="width:400px;" >
+        
+        <label><b> UserId:&nbsp;&nbsp;</b></label><input type="text" placeholder="UserId" ng-model="username" maxlength="7" required/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deleteUser()">Delete</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+        </div>
+      </div>   
+    </div>
+    </form>
+  </div>
+  
+  <!-- End Modal for delete User -->
+  
+  <!-- Modal for Efforts for single User -->
+	<div class="modal fade" id="singleUser" role="dialog">
+	<form name="myForm" class ="form-group" >
+    <div  class="modal-dialog">
+      <div style="width:800px;" align="center"  class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Get efforts for single User</h4>
+        </div>
+        <div class="modal-body" name="EditUser" style="width:775px;" >
+        
+        <form name="innerForm" class="form-group">
+        <label><b> UserId:&nbsp;&nbsp;</b></label><input type="text" placeholder="UserId" ng-model="oneUser" maxlength="7" required/>
+			<br/><br/>
+			 <button type="button" align="center" class="btn btn-default" ng-click="findEffortsUser()">Find</button>
+        </form>
+        <br/><br/>
+        <table ng-show="showEffortsUser" class="table table-striped table-hover" style="width:750px;"> 
+		<thead><tr><td>S.No</td><td>Category</td><td># Number</td><td> Description </td><td> Effort</td></tr><thead>
+		<tbody>	<tr class="active" ng-repeat="history in effortforUser"> <td> {{ $index + 1}}  </td><td>{{ history.category}}</td>
+		<td>{{history.catNumber}} <input type="hidden" value="{{history.taskId}}"/></td><td>{{history.decription}}</td><td>{{history.effort}}</td></tr>
+		<tr><td colspan="5" align="right"><b>Total: {{ getTotalforUser() }}</b></td></tr> 
+		</tbody>
+		</table>
+        </div>
+        <div ng-show="showEffortsUser" class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearthis()">Close</button>
+        </div></div>   
+    </div>
+    </form>
+  </div>
+  
+  <!-- End Modal for efforts for single User -->
+  
+  <!-- Modal for Efforts for singleTask -->
+	<div class="modal fade" id="singleTask" role="dialog">
+	<form name="myForm" class ="form-group" >
+    <div  class="modal-dialog">
+      <div style="width:800px;" align="center"  class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Get efforts for single Task</h4>
+        </div>
+        <div class="modal-body" name="EditUser" style="width:775px;" >
+        
+        <form name="innerForm" class="form-group">
+        <label><b> #Number :&nbsp;&nbsp;</b></label><input type="text" placeholder="INC0000000000000" ng-model="oneTask" maxlength="20" required/>
+			<br/><br/>
+			 <button type="button" align="center" class="btn btn-default" ng-click="findEffortsTask()">Find</button>
+        </form>
+        <br/><br/>
+        <table ng-show="showEffortsTask" class="table table-striped table-hover" style="width:750px;"> 
+		<thead><tr><td>S.No</td><td>User Id</td><td> Effort</td></tr><thead>
+		<tbody>	<tr class="active" ng-repeat="history in effortforTask"> <td> {{ $index + 1}}  </td><td>{{ history.entryId }}</td><td>{{history.effort}}</td></tr>
+		<tr><td colspan="4" align="right"><b>Total: {{ getTotalforTask() }}</b></td></tr> 
+		</tbody>
+		</table>
+        </div>
+        <div ng-show="showEffortsTask" class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cleartask()">Close</button>
+        </div></div>   
+    </div>
+    </form>
+  </div>
+  
+  <!-- End Modal for efforts for singleTask -->
 
+<!-- Modal for Efforts for Team -->
+	<div class="modal fade" id="Team" role="dialog">
+	<form name="myForm" class ="form-group" >
+    <div  class="modal-dialog">
+      <div style="width:800px;" align="center"  class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Team Efforts</h4>
+        </div>
+        <div class="modal-body" name="teamEfforts" style="width:775px;" >
+        <br/>
+        <table class="table table-striped table-hover" style="width:750px;"> 
+		<thead><tr><td>S.No</td><td>User Id</td><td>Category</td><td># Number</td><td> Description </td><td> Effort</td></tr><thead>
+		<tbody>	<tr class="active" ng-repeat="history in effortforTeam"> <td> {{ $index + 1}}  </td><td>{{ history.entryId }}</td><td>{{ history.category}}</td>
+		<td>{{history.catNumber}} <input type="hidden" value="{{history.taskId}}"/></td><td>{{history.decription}}</td><td>{{history.effort}}</td></tr>
+		<tr><td colspan="4" align="right"><b>Total: {{ getTotalforTeam() }}</b></td></tr> 
+		</tbody>
+		</table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div></div>   
+    </div>
+    </form>
+  </div>
+  
+  <!-- End Modal for efforts for Team -->
+
+
+
+<!-- Modal for Add New Member -->
+	<div class="modal fade" id="AddMember" role="dialog">
+	<form name="myForm" class ="form-group" >
+    <div  class="modal-dialog">
+      <div style="width:600px;" align="center"  class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add new team member</h4>
+        </div>
+        <div class="modal-body" name="AddNewMember" style="width:400px;" >
+        <label><b> Member Id:&nbsp;&nbsp;</b></label><input type="text" placeholder="UserId" ng-model="addNewMember" maxlength="7" required/> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="addTeamMember()">Add</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+        </div>
+      </div>   
+    </div>
+    </form>
+  </div>
+  
+  <!-- End Modal for Add New Member -->
+  
 </div>
 <!-- Javascript -->
         <script src="/MSMTracker/resources/assets/js/jquery-1.11.1.min.js"></script>

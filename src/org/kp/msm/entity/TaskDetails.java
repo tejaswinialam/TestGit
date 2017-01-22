@@ -32,6 +32,9 @@ public class TaskDetails {
 	@Column(name = "ENTRY_ID")
 	private String EntryId;
 	
+	@Column(name = "ASSIGNEE")
+	private String assignee;
+	
 	@Column(name = "ENTRY_TS")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date EntryTimeStamp;
@@ -90,5 +93,13 @@ public class TaskDetails {
 
 	public void setEntryTimeStamp(Date entryTimeStamp) {
 		EntryTimeStamp = entryTimeStamp;
+	}
+
+	public String getAssignee() {
+		return assignee;
+	}
+
+	public void setAssignee(String assignee) {
+		this.assignee = assignee;
 	}
 }

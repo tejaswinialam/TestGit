@@ -1,6 +1,5 @@
 package org.kp.msm.controller;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -34,19 +32,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-/*@MultipartConfig(fileSizeThreshold=1024*1024*10,    // 10 MB
-maxFileSize=1024*1024*50,          // 50 MB
-maxRequestSize=1024*1024*100)**/
 public class LoginController {
 	
 	@RequestMapping(value="/Login", method=RequestMethod.POST)
@@ -57,11 +47,11 @@ public class LoginController {
 		//Get from Database
 		UserDetailsDAO udao = new UserDetailsDAO();
 		UserDetails userDetail = udao.getUserDetails(loginbean.getUsername().toUpperCase());
-		if(userDetail != null)
+		if(userDetail != null || userDetail.getAdmin())
 		{
 		String username = userDetail.getUserId();
 		String password = userDetail.getPassword();
-		loginbean.setName(userDetail.getFirstName()+" "+userDetail.getLastName());
+		loginbean.setName((userDetail.getFirstName()==null ? "" :userDetail.getFirstName())+" "+(userDetail.getLastName()==null ? "" :userDetail.getLastName()));
 		loginbean.setSessionStartTime(new Date());
 		System.out.println(loginbean.getUsername());
 		System.out.println(loginbean.getPassword());
@@ -71,6 +61,7 @@ public class LoginController {
 			ModelAndView mav = new ModelAndView("msmfill");
 			System.out.println("Setting the view to msmfill");
 			loginbean.setAuth(true);
+			loginbean.setIsAdmin(userDetail.getAdmin());
 			mav.addObject("loginbean", loginbean);
 			session.setAttribute("user", loginbean);
 			return mav;
@@ -109,10 +100,20 @@ public class LoginController {
 	@RequestMapping(value="/msmfill", method=RequestMethod.GET)
 	public ModelAndView goToMsmLogin(HttpServletRequest request, HttpSession session)
 	{
-		ModelAndView mav = new ModelAndView("msmfill");
 		LoginBean loginbean = (LoginBean)request.getSession().getAttribute("user");
-		mav.addObject("loginbean",loginbean);
-		return mav;
+		if(loginbean != null)
+		{
+			ModelAndView mav = new ModelAndView("msmfill");
+			mav.addObject("loginbean",loginbean);
+			return mav;
+		}
+		else
+		{
+			ModelAndView mav = new ModelAndView("login");
+			mav.addObject("errorMessage", "Session Expired Please login again");
+			return mav;
+		}
+		
 	}
 	
 	@RequestMapping(value="/getAppsList", method=RequestMethod.GET)
@@ -124,10 +125,6 @@ public class LoginController {
 		InputStream input = null;
 		ArrayList<ApplicationBean> li=new ArrayList<ApplicationBean>();
 		try {
-
-			//input = new FileInputStream("a.properties");
-
-			// load a properties file
 			prop.load(getClass().getResourceAsStream("a.properties"));
 			
 			String list[]=prop.getProperty("APPS").split(",");
@@ -179,7 +176,6 @@ public class LoginController {
 		 ResponseBean jrb = new ResponseBean();
 		 jrb.setBeanList(l);
 		 jrb.setHistoryBeanList(h);
-		 
 		 return jrb;
 	}
 	
@@ -232,8 +228,17 @@ public class LoginController {
 				SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
 				String month = sdf.format(new Date());
 				System.out.println(month);
+				MSMActivityLog msmActivity = msmDao.getEffortForTaskAndEntryId(historyBean.getCatNumber(), month,userId.toUpperCase());
+				if(msmActivity == null)
+				{
 				update = msmDao.addMSMActivity(historyBean.getCatNumber(), userId.toUpperCase(), month, Integer.parseInt(historyBean.getEffort()), historyBean.getAdhocComments(), userId.toUpperCase());
 				System.out.println("Successfully Added");
+				}
+				else
+				{
+					update = msmDao.updateMSMActivityLog(msmActivity.getId(), historyBean.getEffort()== null ? msmActivity.getHours() : Integer.parseInt(historyBean.getEffort()+msmActivity.getHours()), "E", userId.toUpperCase());
+					System.out.println("Successfully updated");
+				}
 			}
 		}
 		return update;
@@ -249,6 +254,14 @@ public class LoginController {
 		session.invalidate();
 		ModelAndView mav = new ModelAndView("login");
 		mav.addObject("errorMessage", "Successfully Logged Out");
+		return mav;
+	}
+	
+	@RequestMapping(value="/logout" ,method=RequestMethod.GET)
+	public ModelAndView doLogout(HttpServletRequest request, HttpSession session)
+	{
+		ModelAndView mav = new ModelAndView("login");
+		mav.addObject("errorMessage", "You are already logged out. Please login again");
 		return mav;
 	}
 	

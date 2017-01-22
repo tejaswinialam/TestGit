@@ -6,6 +6,7 @@ import org.kp.msm.bean.ApplicationBean;
 import org.kp.msm.bean.HistoryBean;
 import org.kp.msm.dao.MSMActivityLogDAO;
 import org.kp.msm.dao.TaskDetailsDAO;
+import org.kp.msm.dao.TeamDetailsDAO;
 import org.kp.msm.dao.UserDetailsDAO;
 import org.kp.msm.entity.MSMActivityLog;
 
@@ -222,46 +223,54 @@ public class TestClass {
 	
 	public static void main(String args[])
 	{
-		//UserDetailsDAO ud = new UserDetailsDAO();
-		//ud.addUser("S123788", "S123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", "Y", "S123788");
-		/*TaskDetailsDAO td = new TaskDetailsDAO();
+		UserDetailsDAO ud = new UserDetailsDAO();
+		ud.addUser("S123788", "S123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", true, "S123788");
+		ud.addUser("A123788", "A123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", true, "S123788");
+		ud.addUser("B123788", "B123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", false, "S123788");
+		ud.addUser("C123788", "C123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", false, "S123788");
+		ud.addUser("D123788", "D123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", false, "S123788");
+		ud.addUser("E123788", "E123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", false, "S123788");
+		ud.addUser("F123788", "F123788", "tejaswini.alamuri@kp.org", "Tejaswini", "Alamuri", false, "S123788");
+		TaskDetailsDAO td = new TaskDetailsDAO();
+		td.addTaskDetails("CRQ0000004446101", "AD CDA PACTS SUP", "Modify VPN Access for PACTS Support Team",
+				"010", "Change Request", "Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("CRQ0000004445823", "AD CDA PACTS SUP", "Modify VPN Access for PACTS Support Team",
-				"010", "Change Request", "S123788");
+				"010", "Change Request", "Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("CRQ0000004445817", "AD CDA ECONSULT", "QECNR123 - Abend analysis and followup",
-				"010", "Change Request", "S123788");
+				"010", "Change Request", "Tejaswini Alamuri","S123788");
 		td.addTaskDetails("CRQ0000003351016", "AD CDA PLMS", "PLMS XP - Consult For Upgrading MS SQL server",
-				null, "Change Request", "S123788");
+				null, "Change Request", "Tejaswini Alamuri","S123788");
 		//WO
 		td.addTaskDetails("WO0000003351016", "AD CDA CARETEAMS", "080 - Careteams - Provider Substitution Issue - analysis",
-				"080", "Work Order", "S123788");
+				"080", "Work Order","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("WO0000004445817", "AD CDA PLMS", "010 CAD - Core Projects PLMS Process Improvements. PLMS - Health Check Automation",
-				"010", "Work Order", "S123788");
+				"010", "Work Order","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("WO0000004445823", "AD CDA PLMS", "010 CAD - Core Projects PLMS Process Improvements. Implementing JPA in NPLMS ",
-				"010", "Work Order", "S123788");
+				"010", "Work Order","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("WO0000004446101", "AD CDA PLMS", "Core Projects PLMS Process Improvements. xPression batch Job's XML clean up in plms-xp",
-				"010", "Work Order", "S123788");
+				"010", "Work Order","Tejaswini Alamuri", "S123788");
 		//TASK
 		td.addTaskDetails("TAS0000003351016", "AD CDA PLMS", "PLMS XP Upgrade and Cloud Migration.",
-				null, "Task", "S123788");
+				null, "Task", "Tejaswini Alamuri","S123788");
 		td.addTaskDetails("TAS0000004445817", "AD CDA ECONSULT", "KPHC user is unable to change end date for Care Team",
-				null, "Task", "S123788");
+				null, "Task","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("TAS0000004445823", "AD CDA ECONSULT", "eConsult Not Launching",
-				null, "Task", "S123788");
+				null, "Task","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("TAS0000004446101", "AD CDA PLMS", "100 - PLMS PCP Assignment Letters",
-				null, "Task", "S123788");
+				null, "Task", "Tejaswini Alamuri","S123788");
 		
 		//INC
 		td.addTaskDetails("INC0000003351016", "AD CDA ECONSULT", "**Urgent** Unable to login to eConsult from KPHC",
-				null, "Incident", "S123788");
+				null, "Incident","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("INC0000004445817", "AD CDA PACTS SUP", "50 CAD -Appl Knowledge Sharing",
-				null, "Incident", "S123788");
+				null, "Incident","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("INC0000004445823", "AD CDA MOSL", "100 CAD Covered CA Phase 3",
-				null, "Incident", "S123788");
+				null, "Incident","Tejaswini Alamuri", "S123788");
 		td.addTaskDetails("INC0000004446101", "AD CDA ECONSULT", "110 CAD - Pre-Project Activities - 2015 MAS",
-				null, "Incident", "S123788");*/
+				null, "Incident","Tejaswini Alamuri", "S123788");
 		
 		MSMActivityLogDAO dao = new MSMActivityLogDAO();
-		/*dao.addMSMActivity("CRQ0000003351016", "S123788", "January", 6, "Testing", "S123788");
+		dao.addMSMActivity("CRQ0000003351016", "S123788", "January", 6, "Testing", "S123788");
 		dao.addMSMActivity("CRQ0000004445817", "S123788", "January", 50, "Testing", "S123788");
 		dao.addMSMActivity("CRQ0000004445823", "S123788", "January", 90, "Testing", "S123788");
 		dao.addMSMActivity("CRQ0000004446101", "S123788", "January", 25, "Testing", "S123788");
@@ -280,10 +289,17 @@ public class TestClass {
 		dao.addMSMActivity("WO0000004445817", "S123788", "January", 20, "Testing", "S123788");
 		dao.addMSMActivity("WO0000004445823", "S123788", "January", 15, "Testing", "S123788");
 		dao.addMSMActivity("WO0000004446101", "S123788", "January", 6, "Testing", "S123788");
-		*/
+		
 		//dao.updateMSMActivityLog(2, 125, "E", "S123788");
 		ArrayList<MSMActivityLog> list = dao.getEffortForTasks("S123788", "January");
 		System.out.println("List size :"+list.size());
+		
+		TeamDetailsDAO teamDao = new TeamDetailsDAO();
+		teamDao.addTeamMember("S123788", "B123788");
+		teamDao.addTeamMember("S123788", "C123788");
+		teamDao.addTeamMember("S123788", "D123788");
+		teamDao.addTeamMember("A123788", "E123788");
+		teamDao.addTeamMember("A123788", "F123788");
 	}
 
 }

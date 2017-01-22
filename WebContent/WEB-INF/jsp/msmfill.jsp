@@ -1,4 +1,4 @@
-
+<%@ page import="org.kp.msm.bean.LoginBean" %>
 <!DOCTYPE html>
 <html>
  <head>
@@ -61,6 +61,14 @@
               <button type="submit" class="btn btn-default" data-toggle="popover"
               title="Logout" data-content="Default popover"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button>
               </form>
+              <% LoginBean loginbean = (LoginBean)session.getAttribute("user");
+              boolean isAdmin = loginbean.getIsAdmin();
+              if(isAdmin)
+              { %>
+              <div align=right><br/>
+              <a style="font-size:20px;color:white;" href="admin"><i><span class="glyphicon glyphicon-hand-right"></span> Admin Page </i></a>
+              </div>
+              <%} %>
                    </div>
             <div class="upper-bg">
                 <div class="container">
@@ -143,7 +151,9 @@
 		<tr class="active" ng-repeat="history in category.historyBeanList"> <td> {{ $index + 1}}  </td><td>{{ history.category}}</td>
 		<td>{{history.catNumber}} <input type="hidden" value="{{history.taskId}}"/></td><td>{{history.decription}}</td><td>{{history.effort}}</td><td><button 
 		class="btn btn-primary btn-sm" ng-click="editefforts()" text-align="center" id="button1" data-toggle="modal" data-target="#edit" >Edit</button>
-		<button class="btn btn-primary btn-sm"  ng-really-message="Are you sure to Delete it ?" ng-click="deleteEffort()" text-align="center" id="button">Delete</button></td></tr> 
+		<button class="btn btn-primary btn-sm"  ng-really-message="Are you sure to Delete it ?" ng-click="deleteEffort()" text-align="center" id="button">Delete</button></td></tr>
+		<tr><td colspan="5" align="right"><b>Total: {{ getTotal() }}</b></td>
+		<td></td></tr> 
 		</tbody>
 		</table>
 		

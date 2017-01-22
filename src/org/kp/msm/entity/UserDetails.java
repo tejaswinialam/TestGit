@@ -30,7 +30,7 @@ public class UserDetails {
 	private String Email;
 	
 	@Column(name = "ADMIN")
-	private String Admin;
+	private boolean Admin;
 	
 	@Column(name = "ENTRY_ID")
 	private String EntryId;
@@ -45,6 +45,10 @@ public class UserDetails {
 	@Column(name = "UPDT_TS")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date UpdateTimeStamp;
+	
+	@Column(name = "ACTIVE_IND")
+	private String activeIndicator;
+	
 
 	public String getUserId() {
 		return UserId;
@@ -86,11 +90,11 @@ public class UserDetails {
 		Email = email;
 	}
 
-	public String getAdmin() {
+	public boolean getAdmin() {
 		return Admin;
 	}
 
-	public void setAdmin(String admin) {
+	public void setAdmin(boolean admin) {
 		Admin = admin;
 	}
 
@@ -124,6 +128,14 @@ public class UserDetails {
 
 	public void setUpdateTimeStamp(Date updateTimeStamp) {
 		UpdateTimeStamp = updateTimeStamp;
+	}
+
+	public String getActiveIndicator() {
+		return activeIndicator;
+	}
+
+	public void setActiveIndicator(String activeIndicator) {
+		this.activeIndicator = activeIndicator;
 	}
 	
 	

@@ -17,8 +17,9 @@ public class LoginBean  implements Serializable{
 	private String email;
 	private String firstName;
 	private String lastName;
-	private String isAdmin;
+	private boolean isAdmin;
 	private String name;
+	private int id;
 	private Date sessionStartTime;
 	public Date getSessionStartTime() {
 		return sessionStartTime;
@@ -34,10 +35,10 @@ public class LoginBean  implements Serializable{
 	}
 
 	private boolean auth;
-	public String getIsAdmin() {
+	public boolean getIsAdmin() {
 		return isAdmin;
 	}
-	public void setIsAdmin(String isAdmin) {
+	public void setIsAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 	public boolean isAuth() {
@@ -86,6 +87,12 @@ public class LoginBean  implements Serializable{
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

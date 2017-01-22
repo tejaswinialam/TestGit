@@ -1,6 +1,7 @@
 package org.kp.msm.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.kp.msm.entity.MSMActivityLog;
+import org.kp.msm.entity.TeamDetails;
 
 public class MSMActivityLogDAO {
 	
@@ -108,5 +110,100 @@ public class MSMActivityLogDAO {
 		return list;
 			
 		}
+	
+	public ArrayList<MSMActivityLog> getEffortForSingleTask(String taskId, String Month)
+	{
+		ArrayList<MSMActivityLog> list = new ArrayList<MSMActivityLog>();
+		Session session = null;
+		try{
+			session = HibernateUtil.getSessionFactoryInstance().openSession();
+			session.beginTransaction();
+			Criteria cc = session.createCriteria(MSMActivityLog.class); 
+			cc.add(Restrictions.in("UpdateFlag", new String[] {"A","E"}));
+			cc.add(Restrictions.eq("TaskId", taskId));
+			cc.add(Restrictions.eq("Month", Month));
+			
+			list = (ArrayList<MSMActivityLog>) cc.list();
+			session.getTransaction().commit();
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+				System.out.println("Exception occured in getEffortForSingleTask");
+			}
+			finally
+			{
+				if(session != null)
+					session.close();
+			}
+		return list;
+			
+		}
+	public MSMActivityLog getEffortForTaskAndEntryId(String taskId, String Month, String entryId)
+	{
+		ArrayList<MSMActivityLog> list = new ArrayList<MSMActivityLog>();
+		Session session = null;
+		try{
+			session = HibernateUtil.getSessionFactoryInstance().openSession();
+			session.beginTransaction();
+			Criteria cc = session.createCriteria(MSMActivityLog.class); 
+			cc.add(Restrictions.in("UpdateFlag", new String[] {"A","E"}));
+			cc.add(Restrictions.eq("TaskId", taskId));
+			cc.add(Restrictions.eq("Month", Month));
+			cc.add(Restrictions.eq("EntryId", entryId));
+			list = (ArrayList<MSMActivityLog>) cc.list();
+			session.getTransaction().commit();
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+				System.out.println("Exception occured in getEffortForSingleTask");
+			}
+			finally
+			{
+				if(session != null)
+					session.close();
+			}
+		return list.get(0);
+		}
+	public ArrayList<MSMActivityLog> getEffortForTeam(String leadId, String Month)
+	{
+		ArrayList<MSMActivityLog> list = new ArrayList<MSMActivityLog>();
+		Session session = null;
+		try{
+			TeamDetailsDAO teamDao = new TeamDetailsDAO();
+			ArrayList<TeamDetails> teamList = teamDao.getTeam(leadId);
+			ArrayList<String> userIdList = new ArrayList<String>();
+			for(TeamDetails team : teamList)
+			{
+				userIdList.add(team.getMemberId());
+			}
+			
+			Object[] objList = userIdList.toArray();
+            //Second Step: convert Object array to String array
+            String[] strList = Arrays.copyOf(objList, objList.length, String[].class);
+			session = HibernateUtil.getSessionFactoryInstance().openSession();
+			session.beginTransaction();
+			Criteria cc = session.createCriteria(MSMActivityLog.class); 
+			cc.add(Restrictions.in("UpdateFlag", new String[] {"A","E"}));
+			cc.add(Restrictions.in("EntryId", strList));
+			cc.add(Restrictions.eq("Month", Month));
+			
+			list = (ArrayList<MSMActivityLog>) cc.list();
+			session.getTransaction().commit();
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+				System.out.println("Exception occured in getEffortForSingleTask");
+			}
+			finally
+			{
+				if(session != null)
+					session.close();
+			}
+		return list;
+			
+		} 
 
 }

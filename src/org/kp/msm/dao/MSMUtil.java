@@ -7,6 +7,7 @@ import org.kp.msm.bean.HistoryBean;
 import org.kp.msm.bean.LoginBean;
 import org.kp.msm.entity.MSMActivityLog;
 import org.kp.msm.entity.TaskDetails;
+import org.kp.msm.entity.TeamDetails;
 import org.kp.msm.entity.UserDetails;
 
 public class MSMUtil {
@@ -52,6 +53,7 @@ public class MSMUtil {
 				bean.setDecription(taskDetail.getDescription());
 				bean.setEffort(new Integer(activity.getHours()).toString());
 				bean.setTaskId(new Long(activity.getId()).toString());
+				bean.setEntryId(activity.getEntryId());
 				beanList.add(bean);
 			}
 		}
@@ -75,11 +77,52 @@ public class MSMUtil {
 	public static LoginBean getLoginBean(UserDetails user)
 	{
 		LoginBean loginbean = new LoginBean();
+		loginbean.setUsername(user.getUserId());
 		loginbean.setPassword(user.getPassword());
 		loginbean.setEmail(user.getEmail());
 		loginbean.setFirstName(user.getFirstName());
 		loginbean.setLastName(user.getLastName());
 		loginbean.setIsAdmin(user.getAdmin());
 		return loginbean;
+	}
+	
+	public static UserDetails getLoginBean(LoginBean loginbean)
+	{
+		UserDetails user = new UserDetails();
+		user.setUserId(loginbean.getUsername());
+		user.setPassword(loginbean.getPassword());
+		user.setEmail(loginbean.getEmail());
+		user.setFirstName(loginbean.getFirstName());
+		user.setLastName(loginbean.getLastName());
+		user.setAdmin(loginbean.getIsAdmin());
+		return user;
+	}
+	
+	public static ArrayList<LoginBean> getLoginBeanList(ArrayList<TeamDetails> teamList)
+	{
+		ArrayList<LoginBean> beanList = null;
+		try
+		{
+			UserDetailsDAO tdao = new UserDetailsDAO();
+			beanList = new ArrayList<LoginBean>();
+			for(TeamDetails activity : teamList)
+			{
+				UserDetails userDetail = tdao.getUserDetails(activity.getMemberId());
+				if(userDetail != null)
+				{
+				LoginBean bean = new LoginBean();
+				bean.setName((userDetail.getFirstName()==null ? "" :userDetail.getFirstName())+" "+(userDetail.getLastName()==null ? "" :userDetail.getLastName()));
+				bean.setUsername(activity.getMemberId());
+				bean.setId(activity.getId());
+				beanList.add(bean);
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Exception occured in getListofTasks: "+ex);
+			ex.printStackTrace();
+		}
+		return beanList;
 	}
 }

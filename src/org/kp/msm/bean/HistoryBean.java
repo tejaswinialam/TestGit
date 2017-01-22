@@ -10,6 +10,7 @@ public class HistoryBean {
 	private String updateFlag;
 	private String adhocComments;
 	private String taskId;
+	private String entryId;
 	public String getAdhocComments() {
 		return adhocComments;
 	}
@@ -57,6 +58,12 @@ public class HistoryBean {
 	}
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
+	}
+	public String getEntryId() {
+		return entryId;
+	}
+	public void setEntryId(String entryId) {
+		this.entryId = entryId;
 	}
 	
 	

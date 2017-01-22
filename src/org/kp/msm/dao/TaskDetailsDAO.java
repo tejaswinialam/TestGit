@@ -12,7 +12,7 @@ import org.kp.msm.entity.TaskDetails;
 public class TaskDetailsDAO {
 	
 	public boolean addTaskDetails(String TaskId, String AppName, String Description, String Type, String Category,
-			String EntryId)
+			String assignee, String EntryId)
 	{
 		Session session = null;
 		boolean add = false;
@@ -23,6 +23,7 @@ public class TaskDetailsDAO {
 			td.setDescription(Description);
 			td.setType(Type);
 			td.setCategory(Category);
+			td.setAssignee(assignee);
 			td.setEntryId(EntryId);
 			td.setEntryTimeStamp(new Date());
 			session = HibernateUtil.getSessionFactoryInstance().openSession();
